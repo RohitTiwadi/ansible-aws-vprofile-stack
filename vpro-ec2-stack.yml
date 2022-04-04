@@ -4,15 +4,15 @@
   gather_facts: no
   tasks:
     - name: Import VPC setup Variable
-      include_vars: vpc-output_vars
+      include_vars: output_vars
 
     - name: Import vprofile setup Variable
-      include_vars: vars/vprostacksetup
+      include_vars: vprostacksetup
 
     - name: Create vprofile ec2 key
       ec2_key:
         name: vprokey
-        region: "{{region}}"
+        region: "ap-south-1"
       register: vprokey_out
 
     - name: Save private key into file loginkey_vpro.pem
@@ -26,7 +26,7 @@
       ec2_group:
         name: vproELB-sg
         description: Allow port 80 from everywhere and all port within sg
-        region: "{{region}}"
+        region: "ap-south-1"
         vpc_id: "{{vpcid}}"
         rules:
           - proto: tcp
@@ -39,7 +39,7 @@
       ec2_group:
         name: vproStack-sg
         description: Allow port 22 from everywhere and all port within sg
-        region: "{{region}}"
+        region: "ap-south-1"
         vpc_id: "{{vpcid}}"
         purge_rules: no
         rules:
@@ -58,7 +58,7 @@
       ec2_group:
         name: vproStack-sg
         description: Allow port 22 from everywhere and all port within sg
-        region: "{{region}}"
+        region: "ap-south-1"
         vpc_id: "{{vpcid}}"
         purge_rules: no
         rules:
@@ -68,7 +68,7 @@
     - name: Creating Nginx web01
       ec2:
         key_name: vprokey
-        region: "{{region}}"
+        region: "ap-south-1"
         instance_type: t2.micro
         image: "{{nginx_ami}}"
         wait: yes
@@ -89,7 +89,7 @@
     - name: Creating tomcat app01
       ec2:
         key_name: vprokey
-        region: "{{region}}"
+        region: "ap-south-1"
         instance_type: t2.micro
         image: "{{tomcat_ami}}"
         wait: yes
@@ -110,7 +110,7 @@
     - name: Creating memcache mc01
       ec2:
         key_name: vprokey
-        region: "{{region}}"
+        region: "ap-south-1"
         instance_type: t2.micro
         image: "{{memcache_ami}}"
         wait: yes
@@ -131,7 +131,7 @@
     - name: Creating RabbitMQ rmq01
       ec2:
         key_name: vprokey
-        region: "{{region}}"
+        region: "ap-south-1"
         instance_type: t2.micro
         image: "{{rmq_ami}}"
         wait: yes
@@ -152,7 +152,7 @@
     - name: Creating Mysql db01
       ec2:
         key_name: vprokey
-        region: "{{region}}"
+        region: "ap-south-1"
         instance_type: t2.micro
         image: "{{mysql_ami}}"
         wait: yes
@@ -176,7 +176,7 @@
     - local_action:
         module: ec2_elb_lb
         name: "vprofile-elb"
-        region: "{{region}}"
+        region: "ap-south-1"
         state: present
         instance_ids:
           - "{{ web01_out.tagged_instances[0].id }}"
